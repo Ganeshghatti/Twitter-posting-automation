@@ -66,18 +66,11 @@ app.listen(PORT, () => {
   console.log(`  • Custom: POST http://localhost:${PORT}/post/tweet`);
   console.log(`\n=================================\n`);
   
-  // Initialize automated scheduler after server starts
-  if (process.env.ENABLE_SCHEDULER === 'true') {
-    const { initializeScheduler } = require('./services/scheduler.service');
-    
-    // Run scheduler initialization
-    initializeScheduler(oauth);
-    
-    console.log('🤖 Automated posting scheduler is ENABLED');
-    console.log('📅 Posting 2 tweets at: 9 AM, 12 PM, 5 PM, 8 PM, 11 PM');
-    console.log('📈 Total: 10 tweets per day\n');
-  } else {
-    console.log('⏸️  Automated posting scheduler is DISABLED');
-    console.log('   Set ENABLE_SCHEDULER=true in .env to enable\n');
-  }
+  // Initialize automated scheduler
+  const { initializeScheduler } = require('./services/scheduler.service');
+  initializeScheduler(oauth);
+  
+  console.log('🤖 Automated posting scheduler is ACTIVE');
+  console.log('📅 Posting 2 tweets at: 9 AM, 12 PM, 5 PM, 8 PM, 11 PM');
+  console.log('📈 Total: 10 tweets per day\n');
 });

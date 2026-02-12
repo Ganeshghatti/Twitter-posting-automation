@@ -187,10 +187,10 @@
       <div class="route-card">
         <strong><span class="emoji">🤖</span>Automated AI Posting</strong>
         <p style="color: #657786; margin: 10px 0; font-size: 0.95rem;">
-          Set <code style="background: #e1e8ed; padding: 2px 6px; border-radius: 3px;">ENABLE_SCHEDULER=true</code> in your <code style="background: #e1e8ed; padding: 2px 6px; border-radius: 3px;">.env</code> file to enable automated posting.
+          Automated posting is <strong style="color: #2e7d32;">ACTIVE</strong> by default. Tweets are generated using AI and posted automatically.
         </p>
         <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; margin-top: 10px;">
-          <strong style="color: #1976d2;">📅 Schedule:</strong>
+          <strong style="color: #1976d2;">📅 Daily Schedule:</strong>
           <ul style="margin: 8px 0 0 20px; color: #14171A; font-size: 0.9rem; line-height: 1.6;">
             <li>9:00 AM - 2 tweets</li>
             <li>12:00 PM - 2 tweets</li>
@@ -198,7 +198,7 @@
             <li>8:00 PM - 2 tweets</li>
             <li>11:00 PM - 2 tweets</li>
           </ul>
-          <p style="margin-top: 8px; color: #1976d2; font-weight: 600;">Total: 10 tweets per day</p>
+          <p style="margin-top: 8px; color: #1976d2; font-weight: 600;">✨ Total: 10 tweets per day automatically!</p>
         </div>
       </div>
   
@@ -209,8 +209,7 @@
     <li>Click the button below to start the OAuth flow and get your access tokens</li>
     <li>Copy the tokens to your <code>.env</code> file</li>
     <li>Install and start Ollama: <code>ollama serve</code> then <code>ollama pull llama3.2:3b</code></li>
-    <li>Set <code>ENABLE_SCHEDULER=true</code> in <code>.env</code> to enable automated posting</li>
-    <li>Restart the server - tweets will post automatically!</li>
+    <li>Restart the server - automated posting starts immediately! 🚀</li>
   </ol>
 
   <a href="/auth/twitter" class="btn-primary">🚀 Start OAuth Flow</a>
