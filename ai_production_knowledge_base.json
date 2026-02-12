@@ -1,0 +1,388 @@
+{
+  "knowledge_base": [
+    {
+      "id": 1,
+      "topic": "Making AI Deterministic",
+      "content": "Most AI models hallucinate in production because of one main reason: too much freedom. See, there are two types of systems: deterministic and non-deterministic. Deterministic is where you give an input and you expect the same output everytime. For example, you make an API call. Now, 99% of the times, you will get the same output. Whereas Non-deterministic means everytime you give the same input, you will not get the same output, or you may not get the same output. And when you're building production-ready AI agents, your job is to make AI agent as deterministic as possible. You can do it through multiple techniques: By lowering the temperature, Forcing structured outputs (like JSON), Adding examples in the system prompt, Limiting the model's scope. And there are many others.",
+      "key_points": [
+        "Two types of systems: deterministic vs non-deterministic",
+        "Lower the temperature",
+        "Force structured outputs (JSON)",
+        "Add examples in system prompt",
+        "Limit model's scope"
+      ]
+    },
+    {
+      "id": 2,
+      "topic": "Response Caching",
+      "content": "I've seen startups burn thousands of dollars because of one mistake. They don't store AI responses. Especially in customer-facing AI systems, users ask the same questions again and again. But instead of reusing answers, they hit the LLM every single time. The smarter approach is you should store high-quality responses in your database, embed them, and run semantic search on every new query. If the similarity is high enough, then directly return responses from database. This alone can save lot of costs because once you've a good database size, you'll hardly need AI model. But remember to keep cleaning and revalidating the database as your business logics change.",
+      "key_points": [
+        "Users ask same questions repeatedly",
+        "Store high-quality responses in database",
+        "Embed responses for semantic search",
+        "Return from cache when similarity is high",
+        "Clean and revalidate database regularly"
+      ]
+    },
+    {
+      "id": 3,
+      "topic": "Grounding",
+      "content": "A lot of AI hallucinations can be stopped with one simple technique - Grounding. Grounding basically means not letting the model answer on its own. Force it to answer from your data. You do grounding using: Database records, Internal documents, APIs. For example, lets say user asks about refund status. Without context, AI will definitely hallucinate. Whereas if you provide API access to llm, AI first calls your payments API, gets the real status, and then responds. You can to implement this in production through various ways - You can use RAG, You can force model to cite sources, You should add \"I don't know\" triggers when confidence is low.",
+      "key_points": [
+        "Don't let model answer on its own",
+        "Use database records, internal docs, APIs",
+        "Implement RAG",
+        "Force model to cite sources",
+        "Add 'I don't know' triggers when confidence is low"
+      ]
+    },
+    {
+      "id": 4,
+      "topic": "Rate Limiting",
+      "content": "Many developers don't talk about this until it's too late. I'm talking about rate limiting. Without rate limiting: One user can spam unlimited requests, One bug can loop API calls, And your bill explodes overnight. Every system you build must have: User-level rate limiting, IP-level rate limiting. And for high-throughput systems, you can even implement the token bucket algorithm. Save this before it's too late.",
+      "key_points": [
+        "One user can spam unlimited requests",
+        "One bug can loop API calls",
+        "Bill explodes overnight",
+        "User-level rate limiting",
+        "IP-level rate limiting",
+        "Token bucket algorithm for high-throughput"
+      ]
+    },
+    {
+      "id": 5,
+      "topic": "Error Handling and Fallbacks",
+      "content": "Many AI developers completely ignore error handling. If your AI fails, you must have fallbacks and alerting mechanisms. If your feature is fully AI-dependent, you need to design for the worst-case scenario where the model is down, slow, or returns garbage. The fallback won't be as good as AI, but it will keep users on the platform. You can even implement graceful degradation where if AI fails, return cached responses from your database. Next, you must have a monitoring system running 24/7 that should notify you immediately in case of any mishaps. Lastly, everything depends on how you present it to the user. Instead of showing empty screen, display clearly what went wrong and suggest alternatives to the user.",
+      "key_points": [
+        "Design for worst-case scenario",
+        "Implement graceful degradation",
+        "Return cached responses as fallback",
+        "24/7 monitoring system",
+        "Clear error messages to users"
+      ]
+    },
+    {
+      "id": 6,
+      "topic": "Prompt Versioning",
+      "content": "This one skill can massively improve your AI responses: prompt versioning. See, nobody writes perfect prompts on the first try. It takes multiple iterations to reach a prompt that consistently gives the best results. That's exactly where prompt versioning helps. Every time you change a prompt, keep the history, test it against edge cases, and compare the outputs with older versions. Most people get shocked when I say this: you should store your prompts in Git, not in Google Docs. Treat prompts like code. You can even run A/B testing: send real traffic to different prompt versions and measure which one performs better.",
+      "key_points": [
+        "Nobody writes perfect prompts first try",
+        "Keep prompt history",
+        "Test against edge cases",
+        "Store prompts in Git, not Google Docs",
+        "Run A/B testing on prompts"
+      ]
+    },
+    {
+      "id": 7,
+      "topic": "Human-in-the-Loop",
+      "content": "Whenever you're building AI-automated systems, there's one question you must ask yourself: Should AI make the final decision? And most of the time, the answer is no. That's where human-in-the-loop comes in. Human-in-the-loop means: AI assists, but humans validate when it actually matters. One of the simplest ways to implement this is by using confidence thresholds. For example: if the model's confidence is above 70%, let AI handle it automatically. If it's below that, route it to a human for review. This is especially important for Financial decisions, Hiring, Medical or legal systems, And Customer support escalations.",
+      "key_points": [
+        "AI assists, humans validate",
+        "Use confidence thresholds (e.g., 70%)",
+        "Critical for: financial, hiring, medical, legal",
+        "Auto-handle high confidence",
+        "Route low confidence to humans"
+      ]
+    },
+    {
+      "id": 8,
+      "topic": "Latency Optimization",
+      "content": "If your AI takes too long to respond, your users will leave. It doesn't matter how accurate the response is because half of the users are gone by then. So how do you actually reduce AI latency in production? First: streaming. In 90% of real products, you should never wait for the full response. Start showing tokens as they're generated. Second: cache common queries. If people ask the same thing repeatedly, just reuse them. Third: parallel processing. You can run independent tasks parallely. Fourth: use faster models for simple tasks. Not everything needs your most expensive model. And finally: UI matters. Show \"Thinking…\" with animations. Show skeleton responses instead of boring loader.",
+      "key_points": [
+        "Use streaming - show tokens as generated",
+        "Cache common queries",
+        "Parallel processing for independent tasks",
+        "Use faster models for simple tasks",
+        "Show animations and skeleton responses"
+      ]
+    },
+    {
+      "id": 9,
+      "topic": "Model Routing",
+      "content": "This one technique alone can save you a lot of money and time. It's called model routing. Instead of sending every query to your best and most expensive model, first try to analyze intent. Is this a simple FAQ? Or is this a product query, order status, payment issue? For simple FAQs, you don't need heavy AI at all. Use cached responses, or route to a lighter, cheaper model. This alone can reduce massive cost and latency. But for complex queries like product logic, order tracking, or payments you need grounding, RAG, tool calling. So you route those to a more powerful model to improve response quality. In production, create different cohorts of use cases, and define exactly how each one should be handled.",
+      "key_points": [
+        "Analyze intent first",
+        "Simple FAQs → cached responses or light model",
+        "Complex queries → powerful model with RAG",
+        "Create cohorts of use cases",
+        "Can reduce costs by 60%+"
+      ]
+    },
+    {
+      "id": 10,
+      "topic": "Input Validation",
+      "content": "Most AI failures happen before the model even runs. I'm talking about input validation. Without proper validation: Malicious prompts can jailbreak your AI, Edge cases crash your system, Invalid data gets processed. Every AI system needs: Schema validation for structured inputs, Content filtering for harmful requests, Length limits to prevent token overflow, Type checking before processing. For production systems, add a validation layer that checks: Is the input format correct? Does it contain prohibited content? Is it within acceptable size limits? Reject bad inputs early, before they reach your expensive AI model.",
+      "key_points": [
+        "Most failures happen before model runs",
+        "Schema validation for structured inputs",
+        "Content filtering for harmful requests",
+        "Length limits to prevent token overflow",
+        "Reject bad inputs early"
+      ]
+    },
+    {
+      "id": 11,
+      "topic": "Token Usage Optimization",
+      "content": "Your AI bill is probably 10x higher than it should be. Why? Because you're sending too many tokens. The biggest mistake I see: Sending entire conversation history every single time. Instead, implement context compression: Summarize old messages, Keep only relevant context, Use sliding window for chat history, Remove redundant information. Also optimize your prompts: Remove verbose instructions, Use abbreviations where possible, Cache system prompts, Batch similar requests. One startup reduced their token usage by 70% just by implementing smart context management.",
+      "key_points": [
+        "Biggest mistake: sending entire conversation history",
+        "Implement context compression",
+        "Summarize old messages",
+        "Use sliding window for chat history",
+        "Can reduce token usage by 70%"
+      ]
+    },
+    {
+      "id": 12,
+      "topic": "Output Validation",
+      "content": "Your AI gave a response. Now what? Most developers just send it directly to users. Big mistake. You need output validation layers: Format checking - Is the JSON valid? Is the structure correct? Content moderation - Does it contain harmful content? Hallucination detection - Are the facts verifiable? Quality scoring - Does it meet minimum standards? Implement guardrails: Parse and validate structured outputs, Run toxicity detection, Check against known facts, Score response quality. If validation fails, either retry with modified prompt or fall back to safe default. Never blindly trust AI outputs in production.",
+      "key_points": [
+        "Never blindly trust AI outputs",
+        "Format checking (JSON, structure)",
+        "Content moderation",
+        "Hallucination detection",
+        "Quality scoring",
+        "Retry or fallback on validation failure"
+      ]
+    },
+    {
+      "id": 13,
+      "topic": "Context Window Management",
+      "content": "Running out of context? Your architecture is wrong. Here's what most people miss about context windows: The model doesn't need EVERYTHING. Smart context management means: Prioritize recent messages, Summarize older context, Extract key information only, Use retrieval instead of stuffing. For long conversations: Keep last N messages in full, Summarize messages N to 2N, Index older messages in vector DB, Retrieve only relevant history. For RAG systems: Chunk documents smartly, Retrieve only top-K relevant chunks, Re-rank retrieved content. Context is expensive. Use it wisely.",
+      "key_points": [
+        "Model doesn't need everything",
+        "Keep last N messages in full",
+        "Summarize older messages",
+        "Index old messages in vector DB",
+        "Retrieve only relevant history",
+        "Can save 60-70% of tokens"
+      ]
+    },
+    {
+      "id": 14,
+      "topic": "Multi-Model Strategy",
+      "content": "Stop using one model for everything. Production systems need multiple models working together. Here's how the best teams do it: Classification model first - cheap, fast, routes requests. Small model for simple tasks - handles 70% of queries. Large model for complex tasks - only 30% of traffic. Specialized models for specific domains. Example architecture: User query → Classifier → Simple? → Small model (fast, cheap), Complex? → Large model (slow, expensive), Domain-specific? → Fine-tuned model. This alone cut one company's AI costs by 60% while improving response quality. Use the right tool for each job.",
+      "key_points": [
+        "Don't use one model for everything",
+        "Classifier routes requests",
+        "Small model handles 70% of queries",
+        "Large model for 30% complex queries",
+        "Can cut costs by 60%"
+      ]
+    },
+    {
+      "id": 15,
+      "topic": "Async Processing",
+      "content": "If you're running AI synchronously, you're doing it wrong. Why wait for the model when you can queue it? Async processing pattern: User makes request, You immediately return task ID, Process AI in background, User polls or gets webhook, Return results when ready. Benefits: No timeout issues, Better user experience, Can batch requests, Handle load spikes, Retry failed jobs easily. For long-running AI tasks (video generation, large document processing), async is mandatory. Add a job queue (Redis, RabbitMQ, SQS) and process AI requests in workers. Show users progress, not loading screens.",
+      "key_points": [
+        "Don't run AI synchronously",
+        "Return task ID immediately",
+        "Process in background",
+        "No timeout issues",
+        "Better for long-running tasks",
+        "Use job queues: Redis, RabbitMQ, SQS"
+      ]
+    },
+    {
+      "id": 16,
+      "topic": "Fine-tuning vs Prompting",
+      "content": "Everyone asks: should I fine-tune or just use better prompts? Here's the truth most people won't tell you: Start with prompting. Always. Fine-tuning is for when: You have 1000+ high-quality examples, Your task is very specific, Prompting doesn't work after extensive testing, You need consistent formatting, Cost and latency matter significantly. Stick with prompting when: Your task changes frequently, You don't have quality training data, You need flexibility, Your use case is standard. I've seen companies waste $50k on fine-tuning when better prompts would've solved it. Test extensively with prompts first. Fine-tune only when you hit a clear ceiling.",
+      "key_points": [
+        "Start with prompting always",
+        "Fine-tune when you have 1000+ examples",
+        "Fine-tune for very specific tasks",
+        "Companies waste $50k on unnecessary fine-tuning",
+        "Test prompts extensively first"
+      ]
+    },
+    {
+      "id": 17,
+      "topic": "Logging and Observability",
+      "content": "If you're not logging AI interactions, you're flying blind. What you must log: Every input and output, Model version and parameters, Response time and token usage, User feedback and corrections, Errors and edge cases. Why this matters: Debug production issues, Find improvement opportunities, Track costs accurately, Build fine-tuning datasets, Analyze user patterns. Set up dashboards for: Request volume over time, Average response time, Error rates by type, Cost per request, User satisfaction metrics. Tools: Langfuse, LangSmith, Helicone, or build custom. You can't improve what you don't measure.",
+      "key_points": [
+        "Log every input and output",
+        "Track model version and parameters",
+        "Monitor response time and token usage",
+        "Build dashboards for key metrics",
+        "Tools: Langfuse, LangSmith, Helicone"
+      ]
+    },
+    {
+      "id": 18,
+      "topic": "Security and Prompt Injection",
+      "content": "Your AI is vulnerable to attacks. Here's how hackers exploit it: Prompt injection - users try to override your instructions, Data exfiltration - tricking AI to reveal system prompts, Jailbreaking - bypassing safety guidelines. Defense strategies: Input sanitization - strip suspicious patterns, Instruction hierarchy - make system prompts unoverridable, Output filtering - detect and block leaked instructions, Sandboxing - limit what AI can access. Never put secrets in prompts. Never trust user input completely. Always validate AI outputs. Add rate limiting per user. Monitor for attack patterns. Security in AI isn't optional. It's day-one requirement.",
+      "key_points": [
+        "Prompt injection attacks are real",
+        "Input sanitization strips suspicious patterns",
+        "Make system prompts unoverridable",
+        "Never put secrets in prompts",
+        "Security is day-one requirement"
+      ]
+    },
+    {
+      "id": 19,
+      "topic": "Testing and Evaluation",
+      "content": "You can't ship AI without proper testing. But testing AI is different from testing code. You need: Unit tests - for deterministic components, Integration tests - for full workflows, LLM-as-judge - AI evaluating AI outputs, Human evaluation - for quality and edge cases, A/B testing - for production validation. Build eval sets: 50+ diverse examples, Include edge cases, Cover failure modes, Update regularly. Test for: Correctness, Consistency, Safety, Speed, Cost. Run evals on every prompt change. Track scores over time. Regression testing is critical - new prompts can break old use cases.",
+      "key_points": [
+        "Testing AI differs from testing code",
+        "Build eval sets with 50+ examples",
+        "Use LLM-as-judge for evaluation",
+        "Test for: correctness, consistency, safety, speed, cost",
+        "Run evals on every prompt change"
+      ]
+    },
+    {
+      "id": 20,
+      "topic": "Model Versioning",
+      "content": "Your AI model just got updated. Now what? Without version control, you're in trouble. Every production system needs: Pin exact model versions, Test updates in staging first, Gradual rollout strategy, Rollback capability. When new model drops: Test against your eval set, Run A/B test with 5% traffic, Monitor metrics closely, Gradually increase to 100%, Keep old version ready. Why this matters: Model updates can break your prompts, Performance might regress on your use case, Costs could change dramatically. Never auto-update models in production. Never assume new = better. Always validate before full deployment.",
+      "key_points": [
+        "Pin exact model versions",
+        "Test updates in staging first",
+        "Gradual rollout: 5% → 100%",
+        "Keep rollback capability",
+        "Never auto-update in production"
+      ]
+    }
+  ],
+  "twitter_post_types": [
+    {
+      "type_id": 1,
+      "name": "Problem → Solution Hook",
+      "description": "Start with shocking problem, build urgency, present clear solution",
+      "structure": {
+        "line_1": "Attention-grabbing problem statement",
+        "lines_2_3": "Why it's costing them money/time/users",
+        "lines_4_5": "The solution (clear and specific)",
+        "lines_6_7": "Implementation steps or key tactics",
+        "line_8": "CTA, final insight, or memorable metaphor"
+      },
+      "characteristics": {
+        "length": "8-12 lines",
+        "engagement_driver": "Fear of loss + quick win",
+        "best_for": "Technical solutions, cost savings, performance improvements",
+        "tone": "Urgent, direct, actionable"
+      },
+      "elements_to_include": [
+        "Specific numbers/percentages",
+        "Checkmarks (✅) for solutions",
+        "Strong opening hook",
+        "Clear problem-solution arc",
+        "Memorable closing line"
+      ]
+    },
+    {
+      "type_id": 2,
+      "name": "List/Thread Starter",
+      "description": "Promise specific number of items, progressive disclosure, thread-friendly",
+      "structure": {
+        "line_1": "X things that [desirable outcome]",
+        "line_2": "Build credibility or set stakes",
+        "lines_3_to_n": "Each point as separate line or tweet",
+        "last_line": "Bonus tip or CTA"
+      },
+      "characteristics": {
+        "length": "10-15 tweets for thread, 8-10 lines for single post",
+        "engagement_driver": "Curiosity + completeness",
+        "best_for": "Educational content, frameworks, best practices",
+        "tone": "Informative, comprehensive, organized"
+      },
+      "elements_to_include": [
+        "Numbered items (1/, 2/, 3/ for threads)",
+        "Promise upfront (5 ways, 7 mistakes, etc.)",
+        "Each item is self-contained",
+        "Parallel structure",
+        "Bonus or summary at end"
+      ]
+    },
+    {
+      "type_id": 3,
+      "name": "Narrative/Story",
+      "description": "Personal experience or case study with concrete numbers and revelation",
+      "structure": {
+        "line_1": "Set the scene (who, when, what)",
+        "lines_2_3": "The problem they faced",
+        "lines_4_5": "What they tried (failed attempts)",
+        "line_6": "The insight/turning point",
+        "lines_7_8": "The result with specific numbers",
+        "line_9": "Lesson learned or key takeaway"
+      },
+      "characteristics": {
+        "length": "9-12 lines",
+        "engagement_driver": "Relatability + social proof",
+        "best_for": "Case studies, lessons learned, transformations",
+        "tone": "Conversational, personal, inspiring"
+      },
+      "elements_to_include": [
+        "Real numbers and metrics",
+        "Before/after contrast",
+        "Human element",
+        "Clear turning point",
+        "Relatable struggle"
+      ]
+    },
+    {
+      "type_id": 4,
+      "name": "Contrarian/Hot Take",
+      "description": "Challenge conventional wisdom, present unpopular but valuable truth",
+      "structure": {
+        "line_1": "Controversial statement that opposes common belief",
+        "lines_2_3": "Why everyone gets it wrong",
+        "lines_4_6": "The actual truth with evidence",
+        "lines_7_8": "What to do instead",
+        "line_9": "Reinforcement of contrarian position"
+      },
+      "characteristics": {
+        "length": "9-11 lines",
+        "engagement_driver": "Controversy + validation for minority view",
+        "best_for": "Debunking myths, sharing insider knowledge, thought leadership",
+        "tone": "Confident, bold, provocative"
+      },
+      "elements_to_include": [
+        "Strong contrarian opening",
+        "Acknowledge common belief first",
+        "Evidence or examples supporting your view",
+        "Clear alternative approach",
+        "Conviction in closing"
+      ],
+      "examples": [
+        "Everyone says X. They're wrong.",
+        "Stop doing X. Here's why:",
+        "Unpopular opinion: X is overrated",
+        "The truth about X that nobody talks about"
+      ]
+    },
+    {
+      "type_id": 5,
+      "name": "Mistake/Warning",
+      "description": "Call out common mistake, show consequences, provide correction",
+      "structure": {
+        "line_1": "Most people make this mistake:",
+        "lines_2_3": "Describe the mistake in detail",
+        "lines_4_5": "The consequences (pain points)",
+        "lines_6_7": "The correct approach",
+        "lines_8_9": "Why the correct way works",
+        "line_10": "Warning or call to action"
+      },
+      "characteristics": {
+        "length": "10-12 lines",
+        "engagement_driver": "Fear of making mistake + desire to do it right",
+        "best_for": "Common pitfalls, anti-patterns, cautionary advice",
+        "tone": "Warning, helpful, authoritative"
+      },
+      "elements_to_include": [
+        "Clear identification of mistake",
+        "Real consequences with examples",
+        "Correct alternative",
+        "Warning indicators (⚠️, 🚨)",
+        "Urgency in closing"
+      ],
+      "examples": [
+        "I see this mistake kill startups every week",
+        "Stop doing X before it's too late",
+        "This one mistake cost them $50k",
+        "Warning: X will destroy your [outcome]"
+      ]
+    }
+  ]
+}

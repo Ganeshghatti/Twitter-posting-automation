@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X API OAuth Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+
+    h1 {
+      color: #1DA1F2;
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      color: #14171A;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+
+    .subtitle {
+      color: #657786;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .warning {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .warning strong {
+      color: #856404;
+    }
+
+    .route-card {
+      background: white;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .route-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .route-card strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #14171A;
+    }
+
+    .route-card a {
+      color: #1DA1F2;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      padding: 8px 0;
+    }
+
+    .route-card a:hover {
+      text-decoration: underline;
+    }
+
+    .route-card .method {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #e1f5fe;
+      color: #0277bd;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    .route-card .method.post {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    code {
+      background: #e1e8ed;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #e91e63;
+    }
+
+    ol {
+      margin: 20px 0;
+      padding-left: 30px;
+    }
+
+    ol li {
+      margin: 10px 0;
+      color: #14171A;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: #1DA1F2;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #1a8cd8;
+    }
+
+    .emoji {
+      font-size: 1.2rem;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>X API OAuth 1.0a Demo</h1>
+  <p class="subtitle">Automated posting to X (Twitter) using OAuth 1.0a authentication</p>
+  
+  <div class="warning">
+    <strong>⚠️ Important:</strong> Make sure your callback URL <code>{{CALLBACK_URL}}</code> is configured in your X Developer Portal app settings.
+  </div>
+  
+  <h2>Available Routes</h2>
+  
+  <div class="route-card">
+    <strong><span class="emoji">📊</span>Test Server</strong>
+    <div>
+      <span class="method">GET</span>
+      <a href="/test">/test</a>
+    </div>
+    <p style="color: #657786; margin-top: 8px; font-size: 0.95rem;">Check if server is running and view configuration</p>
+  </div>
+  
+  <div class="route-card">
+    <strong><span class="emoji">🔐</span>OAuth Flow</strong>
+    <div>
+      <span class="method">GET</span>
+      <a href="/auth/twitter">/auth/twitter</a>
+    </div>
+    <p style="color: #657786; margin-top: 8px; font-size: 0.95rem;">Start the 3-legged OAuth flow to obtain access tokens</p>
+  </div>
+  
+      <div class="route-card">
+        <strong><span class="emoji">🐦</span>Post Tweet</strong>
+        <div style="margin-bottom: 10px;">
+          <span class="method">GET</span>
+          <a href="/post/demo-tweet">/post/demo-tweet</a>
+          <p style="color: #657786; margin-top: 5px; font-size: 0.9rem;">Post a demo tweet with timestamp</p>
+        </div>
+        <div>
+          <span class="method post">POST</span>
+          <code>/post/tweet</code>
+          <p style="color: #657786; margin-top: 5px; font-size: 0.9rem;">Post a custom tweet (send JSON body with "text" field)</p>
+        </div>
+      </div>
+      
+      <div class="route-card">
+        <strong><span class="emoji">🤖</span>Automated AI Posting</strong>
+        <p style="color: #657786; margin: 10px 0; font-size: 0.95rem;">
+          Set <code style="background: #e1e8ed; padding: 2px 6px; border-radius: 3px;">ENABLE_SCHEDULER=true</code> in your <code style="background: #e1e8ed; padding: 2px 6px; border-radius: 3px;">.env</code> file to enable automated posting.
+        </p>
+        <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; margin-top: 10px;">
+          <strong style="color: #1976d2;">📅 Schedule:</strong>
+          <ul style="margin: 8px 0 0 20px; color: #14171A; font-size: 0.9rem; line-height: 1.6;">
+            <li>9:00 AM - 2 tweets</li>
+            <li>12:00 PM - 2 tweets</li>
+            <li>5:00 PM - 2 tweets</li>
+            <li>8:00 PM - 2 tweets</li>
+            <li>11:00 PM - 2 tweets</li>
+          </ul>
+          <p style="margin-top: 8px; color: #1976d2; font-weight: 600;">Total: 10 tweets per day</p>
+        </div>
+      </div>
+  
+  <h2>Getting Started</h2>
+  <ol>
+    <li>Make sure your <code>CONSUMER_KEY</code> and <code>CONSUMER_KEY_SECRET</code> are set in <code>.env</code></li>
+    <li>Add <code>{{CALLBACK_URL}}</code> to your app's callback URLs in the <a href="https://developer.x.com/en/portal/dashboard" target="_blank" style="color: #1DA1F2;">X Developer Portal</a></li>
+    <li>Click the button below to start the OAuth flow and get your access tokens</li>
+    <li>Copy the tokens to your <code>.env</code> file</li>
+    <li>Install and start Ollama: <code>ollama serve</code> then <code>ollama pull llama3.2:3b</code></li>
+    <li>Set <code>ENABLE_SCHEDULER=true</code> in <code>.env</code> to enable automated posting</li>
+    <li>Restart the server - tweets will post automatically!</li>
+  </ol>
+
+  <a href="/auth/twitter" class="btn-primary">🚀 Start OAuth Flow</a>
+</body>
+</html>

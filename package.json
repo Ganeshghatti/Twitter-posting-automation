@@ -1,0 +1,29 @@
+{
+  "name": "automated-twitter-posting",
+  "version": "1.0.0",
+  "description": "Automated Twitter posting service",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "nodemon main.js"
+  },
+  "dependencies": {
+    "axios": "^1.13.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "node-cron": "^4.2.1",
+    "oauth-1.0a": "^2.2.6",
+    "ollama": "^0.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "keywords": [
+    "twitter",
+    "x-api",
+    "oauth",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC"
+}

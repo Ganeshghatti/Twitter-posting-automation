@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAuth Success - X API</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+
+    .success-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #2e7d32;
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    .user-info {
+      background: #e3f2fd;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .user-info strong {
+      color: #1976d2;
+    }
+
+    h2 {
+      color: #14171A;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .token-box {
+      background: white;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      word-break: break-all;
+    }
+
+    .token-box strong {
+      display: block;
+      color: #14171A;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .token-box code {
+      display: block;
+      background: #f5f5f5;
+      padding: 12px 15px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #e91e63;
+      border: 1px solid #e0e0e0;
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1DA1F2;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #1a8cd8;
+    }
+
+    .copy-btn.copied {
+      background: #2e7d32;
+    }
+
+    ol {
+      margin: 20px 0;
+      padding-left: 30px;
+      background: white;
+      padding: 25px 25px 25px 50px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    ol li {
+      margin: 12px 0;
+      color: #14171A;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: #1DA1F2;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 10px 10px 10px 0;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #1a8cd8;
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      background: #657786;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 10px 10px 10px 0;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #4f5d6b;
+    }
+
+    .actions {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    code.inline {
+      background: #e1e8ed;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #e91e63;
+    }
+  </style>
+</head>
+<body>
+  <div class="success-header">
+    <div class="success-icon">✅</div>
+    <h1>OAuth Authentication Successful!</h1>
+  </div>
+
+  <div class="user-info">
+    User: <strong>@{{SCREEN_NAME}}</strong> (ID: {{USER_ID}})
+  </div>
+  
+  <h2>🔑 Your Access Tokens</h2>
+  <p style="margin-bottom: 15px; color: #657786;">Save these tokens to your <code class="inline">.env</code> file:</p>
+  
+  <div class="token-box">
+    <strong>ACCESS_TOKEN</strong>
+    <code style="position: relative;">{{ACCESS_TOKEN}}<button class="copy-btn" onclick="copyToken('{{ACCESS_TOKEN}}', this)">Copy</button></code>
+  </div>
+  
+  <div class="token-box">
+    <strong>ACCESS_TOKEN_SECRET</strong>
+    <code style="position: relative;">{{ACCESS_TOKEN_SECRET}}<button class="copy-btn" onclick="copyToken('{{ACCESS_TOKEN_SECRET}}', this)">Copy</button></code>
+  </div>
+  
+  <h2>📋 Next Steps</h2>
+  <ol>
+    <li>Copy the tokens above to your <code class="inline">.env</code> file (remove spaces after the = sign)</li>
+    <li>Make sure they match these variable names:
+      <ul style="margin-top: 8px; list-style: none; padding-left: 0;">
+        <li><code class="inline">ACCESS_TOKEN=your_token_here</code></li>
+        <li><code class="inline">ACCESS_TOKEN_SECRET=your_secret_here</code></li>
+      </ul>
+    </li>
+    <li>Restart the server if it's running</li>
+    <li>Test posting a tweet using the demo endpoint</li>
+  </ol>
+
+  <div class="actions">
+    <a href="/post/demo-tweet" class="btn-primary">🐦 Post Demo Tweet</a>
+    <a href="/" class="btn-secondary">🏠 Go Home</a>
+  </div>
+
+  <script>
+    function copyToken(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        button.textContent = '✓ Copied';
+        button.classList.add('copied');
+        setTimeout(() => {
+          button.textContent = 'Copy';
+          button.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        alert('Failed to copy: ' + err);
+      });
+    }
+  </script>
+</body>
+</html>
