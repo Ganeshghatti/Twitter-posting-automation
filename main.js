@@ -48,7 +48,7 @@ app.get('/test', (req, res) => {
     callback_url: CALLBACK_URL,
     routes: {
       auth: ['/auth/twitter', '/auth/twitter/callback'],
-      post: ['/post/demo-tweet', 'POST /post/tweet']
+      post: ['/post/demo-tweet', 'GET /post/ai', 'POST /post/tweet']
     }
   });
 });
@@ -63,6 +63,7 @@ app.listen(PORT, () => {
   console.log(`  • Test: http://localhost:${PORT}/test`);
   console.log(`  • OAuth: http://localhost:${PORT}/auth/twitter`);
   console.log(`  • Post: http://localhost:${PORT}/post/demo-tweet`);
+  console.log(`  • AI post: GET http://localhost:${PORT}/post/ai`);
   console.log(`  • Custom: POST http://localhost:${PORT}/post/tweet`);
   console.log(`\n=================================\n`);
   

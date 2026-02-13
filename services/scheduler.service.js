@@ -164,6 +164,26 @@ function stopAllJobs() {
 }
 
 /**
+ * Run full content-creation flow once: generate 1 tweet with Ollama and post to X.
+ * Used by GET /post/ai route.
+ */
+async function runSinglePost(oauth) {
+  const isHealthy = await checkOllamaHealth();
+  if (!isHealthy) {
+    throw new Error('Ollama is not available. Start it with: systemctl start ollama');
+  }
+
+  const [tweetData] = await generateMultipleTweets(1);
+  if (!tweetData.tweet) {
+    throw new Error(tweetData.error || 'Failed to generate tweet');
+  }
+
+  const [result] = await postGeneratedTweets([tweetData], oauth);
+  logTweets([result], true);
+  return result;
+}
+
+/**
  * Manual test run (not posted to X)
  */
 async function testGeneration() {
@@ -198,5 +218,6 @@ module.exports = {
   initializeScheduler,
   stopAllJobs,
   automatedPostingJob,
+  runSinglePost,
   testGeneration
 };
