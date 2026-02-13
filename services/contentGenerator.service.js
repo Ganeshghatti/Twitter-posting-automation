@@ -1,50 +1,34 @@
 const fs = require('fs');
 const path = require('path');
-const { generateTweetContent } = require('./ollama.service');
+const { runTweetGraph } = require('../graph/tweetGraph');
+const { loadKnowledgeBase, getRandomItem } = require('./knowledgeBaseLoader');
 
 /**
- * Get random item from array
- */
-function getRandomItem(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-/**
- * Load knowledge base from JSON file
- */
-function loadKnowledgeBase() {
-  const filePath = path.join(__dirname, '..', 'ai_production_knowledge_base.json');
-  const data = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(data);
-}
-
-/**
- * Generate a single tweet
- * @returns {Promise<{tweet: string, metadata: object}>}
+ * Generate a single tweet using LangGraph (Generator → Critique agents).
+ * Returns final tweet and metadata; may run up to MAX_ITERATIONS if critique requests revisions.
+ * @returns {Promise<{tweet: string, metadata: object, critiqueResult?: object, approved?: boolean, iterations?: number}>}
  */
 async function generateSingleTweet() {
-  const data = loadKnowledgeBase();
-  
-  // Pick random knowledge base and post type
-  const knowledgeBase = getRandomItem(data.knowledge_base);
-  const postType = getRandomItem(data.twitter_post_types);
-  
-  console.log('\n📝 Generating tweet...');
-  console.log('Knowledge:', knowledgeBase.topic);
-  console.log('Post Type:', postType.name);
-  
-  const tweetContent = await generateTweetContent(knowledgeBase, postType);
-  
+  console.log('\n📝 Running LangGraph (Generator → Critique)...');
+  const result = await runTweetGraph();
+  const metadata = {
+    ...result.metadata,
+    critique_approved: result.approved,
+    critique_iterations: result.iterations,
+    critique_scores: result.critiqueResult ? {
+      authenticity: result.critiqueResult.authenticity_score,
+      hook: result.critiqueResult.hook_score,
+      formatting: result.critiqueResult.formatting_score,
+      content_value: result.critiqueResult.content_value_score,
+      overall: result.critiqueResult.overall_score
+    } : null
+  };
   return {
-    tweet: tweetContent,
-    metadata: {
-      knowledge_id: knowledgeBase.id,
-      knowledge_topic: knowledgeBase.topic,
-      post_type_id: postType.type_id,
-      post_type_name: postType.name,
-      generated_at: new Date().toISOString(),
-      character_count: tweetContent.length
-    }
+    tweet: result.tweet,
+    metadata,
+    critiqueResult: result.critiqueResult,
+    approved: result.approved,
+    iterations: result.iterations
   };
 }
 

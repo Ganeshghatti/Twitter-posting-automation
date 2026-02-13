@@ -1,29 +1,23 @@
 const { Ollama } = require('ollama');
 
-// Initialize Ollama client
 const ollama = new Ollama({
   host: process.env.OLLAMA_HOST || 'http://localhost:11434'
 });
 
-/**
- * Generate tweet content using Ollama
- * @param {object} knowledgeBase - Selected knowledge base item
- * @param {object} postType - Selected twitter post type
- * @returns {Promise<string>} Generated tweet content
- */
-async function generateTweetContent(knowledgeBase, postType) {
+async function generateTweetContent(knowledgeBase, postType, rewriteDirection = null) {
   const model = process.env.OLLAMA_MODEL || 'llama3.2:3b';
-  
+
   const systemPrompt = `You are an expert AI content creator specializing in Twitter posts about AI engineering and production systems. Your tweets are:
 - Technically accurate
 - Engaging and thought-provoking
 - Written in a conversational tone
 - Include relevant emojis sparingly
 - NO hashtags unless specifically requested
+- MUST be 280 characters or less (X/Twitter limit)
 
-Generate ONLY the tweet text, nothing else.`;
+Generate ONLY the tweet text, nothing else. Keep it under 280 characters.`;
 
-  const userPrompt = `Create a Twitter post using this knowledge and structure:
+  let userPrompt = `Create a Twitter post using this knowledge and structure:
 
 KNOWLEDGE BASE:
 Topic: ${knowledgeBase.topic}
@@ -39,63 +33,49 @@ Length: ${postType.characteristics.length}
 Elements to include:
 ${postType.elements_to_include.join('\n')}
 
-Generate a compelling tweet that follows the "${postType.name}" format and incorporates the knowledge about "${knowledgeBase.topic}"`;
+Generate a compelling tweet that follows the "${postType.name}" format and incorporates the knowledge about "${knowledgeBase.topic}". Maximum 280 characters.`;
 
-  try {
-    console.log('🤖 Generating tweet with Ollama...');
-    console.log('Model:', model);
-    console.log('Topic:', knowledgeBase.topic);
-    console.log('Post Type:', postType.name);
-
-    const response = await ollama.generate({
-      model: model,
-      prompt: userPrompt,
-      system: systemPrompt,
-      stream: false,
-      options: {
-        temperature: 0.7,
-        top_p: 0.9,
-        max_tokens: 1000
-      }
-    });
-
-    const generatedText = response.response.trim();
-
-    console.log('✅ Tweet generated successfully');
-    console.log('Length:', generatedText.length, 'characters');
-    
-    return generatedText;
-  } catch (error) {
-    console.error('❌ Error generating tweet with Ollama:', error.message);
-    throw error;
+  if (rewriteDirection) {
+    userPrompt += `\n\nCRITIQUE FEEDBACK - apply these changes:\n${rewriteDirection}`;
   }
+
+  const response = await ollama.generate({
+    model,
+    prompt: userPrompt,
+    system: systemPrompt,
+    stream: false,
+    options: { temperature: 0.7, top_p: 0.9, max_tokens: 1000 }
+  });
+
+  return response.response.trim();
 }
 
-/**
- * Check if Ollama is running and model is available
- * @returns {Promise<boolean>}
- */
+async function callOllama(systemPrompt, userPrompt, options = {}) {
+  const model = process.env.OLLAMA_MODEL || 'llama3.2:3b';
+  const response = await ollama.generate({
+    model,
+    prompt: userPrompt,
+    system: systemPrompt,
+    stream: false,
+    options: { temperature: 0.3, max_tokens: 1500, ...options }
+  });
+  return response.response.trim();
+}
+
 async function checkOllamaHealth() {
   try {
-    const model = process.env.OLLAMA_MODEL || 'llama3.2';
+    const model = process.env.OLLAMA_MODEL || 'llama3.2:3b';
     const models = await ollama.list();
     const isModelAvailable = models.models.some(m => m.name.includes(model.split(':')[0]));
-    
-    if (!isModelAvailable) {
-      console.log(`⚠️ Model "${model}" not found. Available models:`, 
-        models.models.map(m => m.name).join(', '));
-      return false;
-    }
-    
-    console.log(`✅ Ollama is healthy. Model "${model}" is available.`);
+    if (!isModelAvailable) return false;
     return true;
-  } catch (error) {
-    console.error('❌ Ollama health check failed:', error.message);
+  } catch (e) {
     return false;
   }
 }
 
 module.exports = {
   generateTweetContent,
+  callOllama,
   checkOllamaHealth
 };
