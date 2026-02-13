@@ -13,9 +13,8 @@ async function generateTweetContent(knowledgeBase, postType, rewriteDirection = 
 - Written in a conversational tone
 - Include relevant emojis sparingly
 - NO hashtags unless specifically requested
-- MUST be 280 characters or less (X/Twitter limit)
 
-Generate ONLY the tweet text, nothing else. Keep it under 280 characters.`;
+Generate ONLY the tweet text, nothing else.`;
 
   let userPrompt = `Create a Twitter post using this knowledge and structure:
 
@@ -33,7 +32,7 @@ Length: ${postType.characteristics.length}
 Elements to include:
 ${postType.elements_to_include.join('\n')}
 
-Generate a compelling tweet that follows the "${postType.name}" format and incorporates the knowledge about "${knowledgeBase.topic}". Maximum 280 characters.`;
+Generate a compelling tweet that follows the "${postType.name}" format and incorporates the knowledge about "${knowledgeBase.topic}".`;
 
   if (rewriteDirection) {
     userPrompt += `\n\nCRITIQUE FEEDBACK - apply these changes:\n${rewriteDirection}`;

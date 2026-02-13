@@ -1,19 +1,11 @@
 const axios = require('axios');
 
-// X (Twitter) character limit for standard tweets
-const X_TWEET_MAX_LENGTH = 280;
-
 // Direct function to post a tweet (used by scheduler)
 const postTweetDirect = async (oauth, consumerKey, consumerSecret, accessToken, accessTokenSecret, text) => {
   const token = {
     key: accessToken,
     secret: accessTokenSecret
   };
-
-  // X API rejects tweets over 280 chars (403) for standard accounts
-  const textToPost = text.length > X_TWEET_MAX_LENGTH
-    ? text.slice(0, X_TWEET_MAX_LENGTH - 3).trim() + '...'
-    : text;
 
   const request_data = {
     url: 'https://api.x.com/2/tweets',
@@ -23,7 +15,7 @@ const postTweetDirect = async (oauth, consumerKey, consumerSecret, accessToken, 
   const authHeader = oauth.toHeader(oauth.authorize(request_data, token));
 
   const response = await axios.post(request_data.url,
-    { text: textToPost },
+    { text },
     {
       headers: {
         ...authHeader,
